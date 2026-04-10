@@ -108,7 +108,9 @@ class ReplayPolicy(BasePolicy):
                 # Stack all actions: shape (episode_length, action_dim)
                 action_list = []
                 for i in range(self.episode_length):
-                    action_array = np.array(self.episode_data[col_name].iloc[i]).astype(np.float32)
+                    action_array = np.asarray(
+                        self.episode_data[col_name].iloc[i], dtype=np.float32
+                    ).reshape(-1)
                     action_list.append(action_array)
                 self.actions[key] = np.stack(action_list, axis=0)
             else:

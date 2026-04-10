@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import json
 import os
+from typing import Any
 
 from gr00t.data.embodiment_tags import EmbodimentTag
 from gr00t.policy.gr00t_policy import Gr00tPolicy
@@ -36,6 +37,12 @@ class ServerConfig:
     execution_horizon: int | None = None
     """Policy execution horizon during inference."""
 
+    video_backend: str = "torchcodec"
+    """Video decoding backend for ReplayPolicy (e.g., 'ffmpeg', 'torchcodec')."""
+
+    video_backend_kwargs: dict[str, Any] | None = None
+    """Optional kwargs passed to the video backend (ReplayPolicy only)."""
+
     # Server configs
     host: str = "0.0.0.0"
     """Host address for the server"""
@@ -59,7 +66,7 @@ def main(config: ServerConfig):
     print(f"  Port: {config.port}")
 
     # check if the model path exists
-    if config.model_path.startswith("/") and not os.path.exists(config.model_path):
+    if config.model_path is not None and config.model_path.startswith("/") and not os.path.exists(config.model_path):
         raise FileNotFoundError(f"Model path {config.model_path} does not exist")
 
     # Create and start the server
@@ -82,6 +89,8 @@ def main(config: ServerConfig):
             dataset_path=config.dataset_path,
             modality_configs=modality_configs,
             execution_horizon=config.execution_horizon,
+            video_backend=config.video_backend,
+            video_backend_kwargs=config.video_backend_kwargs,
             strict=config.strict,
         )
     else:

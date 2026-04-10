@@ -14,7 +14,7 @@ from transformers import AutoModel, AutoProcessor
 
 from gr00t.data.embodiment_tags import EmbodimentTag
 from gr00t.data.interfaces import BaseProcessor
-from gr00t.data.types import MessageType, ModalityConfig, VLAStepData
+from gr00t.data.types import ActionRepresentation, MessageType, ModalityConfig, VLAStepData
 
 from .policy import BasePolicy, PolicyWrapper
 
@@ -92,6 +92,24 @@ class Gr00tPolicy(BasePolicy):
         self.embodiment_tag = embodiment_tag
         self.modality_configs = self.processor.get_modality_configs()[self.embodiment_tag.value]
         self.collate_fn = self.processor.collator
+
+        # Unitree G1 (and others) can use RELATIVE action representations. The model predicts
+        # actions in the processed space and `decode_action()` must convert relative deltas
+        # back to absolute targets using the current state. Some checkpoints/processors may
+        # not have `use_relative_action` enabled by default, which makes rollouts look wrong.
+        action_cfgs = self.modality_configs.get("action")
+        if action_cfgs is not None and action_cfgs.action_configs is not None:
+            needs_relative_decode = any(
+                cfg.rep == ActionRepresentation.RELATIVE for cfg in action_cfgs.action_configs
+            )
+            if needs_relative_decode:
+                # Best-effort: enable relative decode if the processor supports it.
+                if hasattr(self.processor, "use_relative_action"):
+                    setattr(self.processor, "use_relative_action", True)
+                if hasattr(self.processor, "state_action_processor") and hasattr(
+                    self.processor.state_action_processor, "use_relative_action"
+                ):
+                    self.processor.state_action_processor.use_relative_action = True
 
         # Extract and validate language configuration
         # Currently only supports single language input per timestep

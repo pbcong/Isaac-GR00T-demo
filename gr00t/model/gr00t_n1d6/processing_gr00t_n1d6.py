@@ -236,6 +236,11 @@ class Gr00tN1d6Processor(BaseProcessor):
         state: dict[str, np.ndarray] | None = None,
     ):
         """Undo action normalization and convert relative actions to absolute."""
+        if action.ndim == 1:
+            action = action[None, None, :]
+        elif action.ndim == 2:
+            action = action[None, :, :]
+
         # Split concatenated action into joint groups
         out_dict = {}
         start_idx = 0
