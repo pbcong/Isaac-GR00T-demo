@@ -1,0 +1,13 @@
+{
+  "command": "inspect the table",
+  "target": "table",
+  "verdict": "safe",
+  "alarm": false,
+  "items": [
+    {
+      "name": "red box",
+      "hazardous": false,
+      "reason": "plain red surface, no symbols or warnings seen from any angle"
+    }
+  ]
+}

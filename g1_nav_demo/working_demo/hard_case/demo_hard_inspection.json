@@ -1,0 +1,13 @@
+{
+  "command": "inspect the table",
+  "target": "table",
+  "verdict": "hazardous",
+  "alarm": true,
+  "items": [
+    {
+      "name": "red box",
+      "hazardous": true,
+      "reason": "Radioactive symbol and text clearly visible"
+    }
+  ]
+}

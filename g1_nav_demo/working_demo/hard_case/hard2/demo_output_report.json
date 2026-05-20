@@ -1,0 +1,12 @@
+{
+  "command": "inspect the table",
+  "verdict": "hazardous",
+  "message": "Inspected all accessible sides of the table. Found a red box with prominent radioactive trefoil and \"RADIOACTIVE\" label on the back side. Hazard confirmed.",
+  "findings": [
+    {
+      "name": "red box",
+      "hazardous": true,
+      "reason": "radioactive symbol"
+    }
+  ]
+}

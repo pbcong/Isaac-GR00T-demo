@@ -1,0 +1,6 @@
+{
+  "command": "go to the table",
+  "verdict": "complete",
+  "message": "Navigated to the table successfully.",
+  "findings": []
+}

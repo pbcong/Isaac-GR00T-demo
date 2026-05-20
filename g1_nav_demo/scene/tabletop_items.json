@@ -1,0 +1,33 @@
+{
+  "table_top_z": 0.75,
+  "default_scenario": "hard_hazard",
+  "scenarios": {
+    "navigation": [],
+    "easy_hazard": [
+      {
+        "name": "radioactive_box",
+        "kind": "hazard_box",
+        "texture": "hazard_placard_radioactive.png",
+        "pos_xy": [0.0, 0.0],
+        "placard_sides": ["back"]
+      }
+    ],
+    "hard_hazard": [
+      {
+        "name": "radioactive_box",
+        "kind": "hazard_box",
+        "texture": "hazard_placard_radioactive.png",
+        "pos_xy": [0.0, 0.0],
+        "placard_sides": ["front"]
+      }
+    ],
+    "safe_box": [
+      {
+        "name": "plain_box",
+        "kind": "hazard_box",
+        "pos_xy": [0.0, 0.0],
+        "placard_sides": []
+      }
+    ]
+  }
+}
