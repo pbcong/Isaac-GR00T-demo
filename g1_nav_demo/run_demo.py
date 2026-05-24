@@ -280,6 +280,25 @@ class NavigationSession:
         target_y = gy + direction[1] * 0.8
         return float(math.atan2(target_y - gy, target_x - gx))
 
+    def compute_detour_goal(self, goal: Goal) -> Goal:
+        current_pos = self.current_position()
+        next_wp = self.goal_planner.current_waypoint
+        if next_wp is None:
+            return goal
+        dx = next_wp[0] - current_pos[0]
+        dy = next_wp[1] - current_pos[1]
+        dist = math.hypot(dx, dy)
+        forward = np.array([dx / dist, dy / dist]) if dist > 1e-3 else np.array([1.0, 0.0])
+        perp = np.array([-forward[1], forward[0]])
+        detour = np.array(current_pos, dtype=np.float64) + perp * self.avoidance_detour_dist
+        remaining = list(self.goal_planner._waypoints[self.goal_planner._current_wp_idx:])
+        new_waypoints = [(float(detour[0]), float(detour[1]))] + remaining
+        return Goal(
+            target_name=goal.target_name,
+            waypoints=new_waypoints,
+            face_direction=goal.face_direction,
+        )
+
     def parse_goal(self, command: str, debug_prefix: str | None = None) -> Goal | None:
         robot_pos = self.current_position()
         robot_yaw = self.current_yaw()
@@ -308,14 +327,15 @@ class NavigationSession:
             width=1280, height=480,
         )
         try:
-            return self.run_to_goal_with_renderer(goal, command, video_renderer)
+            reached, _ = self.run_to_goal_with_renderer(goal, command, video_renderer)
+            return reached
         finally:
             video_renderer.close()
 
     def run_to_goal_with_renderer(
         self, goal: Goal, command: str, video_renderer: "VideoRenderer",
         face_yaw_override: float | None = None,
-    ) -> bool:
+    ) -> tuple[bool, bool]:
         from g1_nav_demo.avoidance import AvoidanceStateMachine
 
         face_yaw = (
@@ -337,6 +357,7 @@ class NavigationSession:
         target_positions = self.default_angles.copy()
         velocity_command = np.zeros(3, dtype=np.float32)
         reached = False
+        blocked = False
         plan_result = None
         steps_per_render = max(1, self.sim_fps // self.render_fps)
 
@@ -348,8 +369,12 @@ class NavigationSession:
                 range_val = _read_forward_range(
                     self.model, self.data, current_pos, current_yaw
                 )
-                avoidance.step(range_val, current_pos, self.goal_planner, face_yaw)
+                reroute = avoidance.step(range_val, current_pos, face_yaw)
                 video_renderer.obstacle_banner = avoidance.banner
+                if reroute:
+                    reached = False
+                    blocked = True
+                    break
 
                 if avoidance.is_navigating:
                     plan_result = self.goal_planner.compute_command(
@@ -429,9 +454,9 @@ class NavigationSession:
                 )
                 video_renderer.write_frame(frame)
 
-        if not reached:
+        if not reached and not blocked:
             logger.warning("Did not reach goal within %d steps", self.max_steps)
-        return reached
+        return reached, blocked
 
     def idle(
         self,

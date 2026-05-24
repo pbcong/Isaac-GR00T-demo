@@ -1,13 +1,6 @@
 from __future__ import annotations
 
-import math
 from enum import Enum, auto
-from typing import TYPE_CHECKING
-
-import numpy as np
-
-if TYPE_CHECKING:
-    from g1_nav_demo.planner.goal_planner import GoalPlanner
 
 
 class _State(Enum):
@@ -17,7 +10,7 @@ class _State(Enum):
 
 
 class AvoidanceStateMachine:
-    """Rule-based stop -> wait -> geometric-reroute obstacle avoidance."""
+    """Rule-based stop -> wait -> reroute obstacle avoidance."""
 
     def __init__(
         self,
@@ -42,9 +35,9 @@ class AvoidanceStateMachine:
         self,
         range_reading: float,
         current_pos: tuple[float, float],
-        goal_planner: "GoalPlanner",
         face_yaw: float | None,
-    ) -> None:
+    ) -> bool:
+        """Advance state machine. Returns True when a reroute should be triggered."""
         if self._state == _State.NAVIGATING:
             self.banner = None
             if range_reading < self.stop_dist:
@@ -62,30 +55,11 @@ class AvoidanceStateMachine:
 
         elif self._state == _State.REROUTING:
             self.banner = "REROUTING..."
-            self._do_reroute(current_pos, goal_planner, face_yaw)
             self._state = _State.NAVIGATING
             self._blocked_steps = 0
+            return True
 
-    def _do_reroute(
-        self,
-        current_pos: tuple[float, float],
-        goal_planner: "GoalPlanner",
-        face_yaw: float | None,
-    ) -> None:
-        next_wp = goal_planner.current_waypoint
-        if next_wp is None:
-            return
-        dx = next_wp[0] - current_pos[0]
-        dy = next_wp[1] - current_pos[1]
-        dist = math.hypot(dx, dy)
-        forward = np.array([dx / dist, dy / dist]) if dist > 1e-3 else np.array([1.0, 0.0])
-        perp = np.array([-forward[1], forward[0]])  # 90 degrees left
-        detour = np.array(current_pos, dtype=np.float64) + perp * self.detour_dist
-        remaining = list(goal_planner._waypoints[goal_planner._current_wp_idx:])
-        goal_planner.set_waypoints(
-            [(float(detour[0]), float(detour[1]))] + remaining,
-            face_yaw=face_yaw,
-        )
+        return False
 
     def reset(self) -> None:
         self._state = _State.NAVIGATING

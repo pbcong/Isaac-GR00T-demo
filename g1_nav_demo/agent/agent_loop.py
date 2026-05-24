@@ -188,7 +188,14 @@ class AgentLoop:
         if goal is None:
             logger.warning("navigate: could not plan path for %r", instruction)
             return {"reached": False, "reason": "Could not plan path for instruction"}
-        reached = self.session.run_to_goal_with_renderer(goal, instruction, video_renderer)
+        max_reroutes = 3
+        for attempt in range(max_reroutes + 1):
+            reached, blocked = self.session.run_to_goal_with_renderer(goal, instruction, video_renderer)
+            if reached or not blocked:
+                break
+            if attempt < max_reroutes:
+                logger.info("Obstacle timeout — rerouting (attempt %d/%d)", attempt + 1, max_reroutes)
+                goal = self.session.compute_detour_goal(goal)
         pos = self.session.current_position()
         return {"reached": reached, "position": list(pos)}
 

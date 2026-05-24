@@ -22,7 +22,7 @@
     <texture type="2d" name="gridfloor" builtin="checker" mark="edge" rgb1="0.25 0.25 0.25" rgb2="0.3 0.3 0.3"
       markrgb="0.5 0.5 0.5" width="300" height="300"/>
     <material name="gridfloor" texture="gridfloor" texuniform="true" texrepeat="10 10" reflectance="0.1"/>
-      <texture name="tex_radioactive_box" type="2d" file="/mnt/raid10/erwin/testing/astar/Isaac-GR00T/g1_nav_demo/scene/hazard_placard_radioactive.png"/>
+      <texture name="tex_radioactive_box" type="2d" file="/mnt/e/Desktop/astar/g1_nav_demo/scene/hazard_placard_radioactive.png"/>
     <material name="mat_radioactive_box" texture="tex_radioactive_box" texuniform="false" emission="0.3" specular="0.05" shininess="0.05" reflectance="0"/>
   </asset>
 
