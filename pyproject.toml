@@ -48,6 +48,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+isaac = [
+    "isaacsim==4.5.0.0",
+    "isaacsim-extscache-physics==4.5.0.0",
+    "isaacsim-extscache-kit==4.5.0.0",
+    "isaacsim-extscache-kit-sdk==4.5.0.0",
+    "isaacsim-robot-setup==4.5.0.0",
+]
 dev = [
     "ruff",
     "ipython",

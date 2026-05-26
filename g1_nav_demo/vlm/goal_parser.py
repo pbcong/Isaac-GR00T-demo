@@ -213,9 +213,8 @@ class VLMBridge:
                         ],
                     },
                 ],
-                max_tokens=600,
+                max_tokens=300,
                 temperature=0.2,
-                extra_body={"reasoning": {"enabled": True}},
             )
             msg = response.choices[0].message
             text = msg.content or ""

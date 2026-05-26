@@ -54,6 +54,9 @@ class G1WalkPolicy:
     def __init__(self, policy_path: str, device: str = "cpu"):
         self.policy = torch.jit.load(policy_path, map_location=device)
         self.policy.eval()
+        for m in self.policy.modules():
+            if hasattr(m, "flatten_parameters"):
+                m.flatten_parameters()
         self.device = device
 
         self._last_action = np.zeros(self.NUM_ACTIONS, dtype=np.float32)

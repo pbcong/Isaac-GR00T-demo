@@ -1,0 +1,6 @@
+{
+  "command": "go to the table",
+  "verdict": "failed",
+  "message": "Navigation to the table failed after multiple attempts.",
+  "findings": []
+}

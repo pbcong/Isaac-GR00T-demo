@@ -1,49 +1,31 @@
 #!/usr/bin/env bash
-# Run the G1 navigation demo with OpenRouter VLM goal parsing.
-# Usage:
-#   Single-turn:  bash run_vlm_demo.sh "go to the table" demo_output.mp4
-#   Multi-turn:   bash run_vlm_demo.sh --multiturn [output_dir]
-
+# Single-turn:  bash run_vlm_demo.sh "go to the table" [output.mp4]
+# Multi-turn:   bash run_vlm_demo.sh --multiturn [output_dir]
+# Overrides:    DEVICE=cpu|cuda  GPU=0  MODEL=...  MAX_STEPS=5000
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+PYTHON="$PROJECT_DIR/.venv/bin/python"
 
+[ -f "$PROJECT_DIR/.env" ] && { set -a; source "$PROJECT_DIR/.env"; set +a; }
+: "${OPENROUTER_API_KEY:?OPENROUTER_API_KEY not set — add to $PROJECT_DIR/.env}"
+[ -x "$PYTHON" ] || { echo "venv not found — run: uv venv .venv --python 3.10 && uv pip install -e ."; exit 1; }
+
+DEVICE="${DEVICE:-cuda}"
+[ "$DEVICE" = "cuda" ] && export CUDA_VISIBLE_DEVICES="${GPU:-0}"
 export MUJOCO_GL="${MUJOCO_GL:-egl}"
-export CUDA_VISIBLE_DEVICES="${POLICY_GPU:-3}"
 
-if [ -f "$PROJECT_DIR/.env" ]; then
-    set -a; source "$PROJECT_DIR/.env"; set +a
-fi
-
-: "${OPENROUTER_API_KEY:?ERROR: OPENROUTER_API_KEY not set. Add it to $PROJECT_DIR/.env}"
-
-MULTITURN_FLAG=""
+COMMON=(
+    --policy-path "$SCRIPT_DIR/walk_policy/motion.pt"
+    --vlm-model "${MODEL:-x-ai/grok-4.3}"
+    --device "$DEVICE"
+    --max-steps "${MAX_STEPS:-10000}"
+)
 
 if [ "$1" = "--multiturn" ]; then
-    MULTITURN_FLAG="--multiturn"
-    OUTPUT_DIR="${2:-demo_output}"
-    echo "Mode    : multi-turn interactive"
-    echo "Output  : $OUTPUT_DIR/"
-    echo ""
-    python "$PROJECT_DIR/g1_nav_demo/run_demo.py" \
-        --multiturn \
-        --output-dir "$OUTPUT_DIR" \
-        --policy-path "$SCRIPT_DIR/walk_policy/motion.pt" \
-        --vlm-model "${MODEL:-x-ai/grok-4.3}" \
-        --device cuda \
-        --max-steps 10000
+    "$PYTHON" "$PROJECT_DIR/g1_nav_demo/run_demo.py" --multiturn --output-dir "${2:-demo_output}" "${COMMON[@]}"
 else
-    COMMAND="${1:-go to the table}"
-    OUTPUT="${2:-demo_output.mp4}"
-    echo "Command : $COMMAND"
-    echo "Output  : $OUTPUT"
-    echo ""
-    python "$PROJECT_DIR/g1_nav_demo/run_demo.py" \
-        --command "$COMMAND" \
-        --policy-path "$SCRIPT_DIR/walk_policy/motion.pt" \
-        --output "$OUTPUT" \
-        --vlm-model "${MODEL:-x-ai/grok-4.3}" \
-        --device cuda \
-        --max-steps 10000
+    echo "${1:-go to the table} → ${2:-demo_output.mp4}  [device=$DEVICE]"
+    "$PYTHON" "$PROJECT_DIR/g1_nav_demo/run_demo.py" --command "${1:-go to the table}" --output "${2:-demo_output.mp4}" "${COMMON[@]}"
 fi

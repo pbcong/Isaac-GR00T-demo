@@ -24,9 +24,9 @@ from isaacsim import SimulationApp
 
 _APP_CFG = {
     "headless": True,
-    "renderer": "RayTracedLighting",   # shows fire; swap to "PathTracing" for best quality
-    "width": 1280,
-    "height": 720,
+    "renderer": "RasterizedLighting",  # no RT cores needed; saves VRAM on 6GB GPU
+    "width": 640,
+    "height": 360,
 }
 simulation_app = SimulationApp(_APP_CFG)
 
