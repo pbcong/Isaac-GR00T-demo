@@ -174,6 +174,34 @@ wheels = [
 ]
 
 [[package]]
+name = "boto3"
+version = "1.43.14"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "botocore" },
+    { name = "jmespath" },
+    { name = "s3transfer" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/79/4b/616367e871ce3f1cb3e8545a97736b6331b9fb081497f2d44c5b2aa6959d/boto3-1.43.14.tar.gz", hash = "sha256:5c0a994b3182061ee101812e721100717a4d664f9f4ceaf4a86b6d032ce9fc2d", size = 113142, upload-time = "2026-05-22T19:28:47.861Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/00/59cb9329c18e2d3aa23062ceaa87d065f2e81e7d2931df24d64e9a7815aa/boto3-1.43.14-py3-none-any.whl", hash = "sha256:574335744656cfed0b362a0a0467aaf2eb2bf15526edcd02d31d3c661f4b09e4", size = 140536, upload-time = "2026-05-22T19:28:46.49Z" },
+]
+
+[[package]]
+name = "botocore"
+version = "1.43.14"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jmespath" },
+    { name = "python-dateutil" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/78/3c/798d2f7deb118241930c7c6bcfb0b970d3f0245bf580700663199aeed2c3/botocore-1.43.14.tar.gz", hash = "sha256:b9e500737e43d2f147c9d4e23b54360335e77d4c0ba90a318f51b65e06cb8516", size = 15382604, upload-time = "2026-05-22T19:28:36.363Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/27/7e/6e64821077cd2efc4aa51b7d638fb6d48e1c7c450201c529fbaf1de8bfd3/botocore-1.43.14-py3-none-any.whl", hash = "sha256:1f4a2a95ea78c10398e78431e98c1fe47adb54a7b10a32975144c1f541186658", size = 15061424, upload-time = "2026-05-22T19:28:32.682Z" },
+]
+
+[[package]]
 name = "build"
 version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -672,6 +700,13 @@ gpu = [
     { name = "onnx" },
     { name = "tensorrt" },
 ]
+isaac = [
+    { name = "isaacsim" },
+    { name = "isaacsim-extscache-kit" },
+    { name = "isaacsim-extscache-kit-sdk" },
+    { name = "isaacsim-extscache-physics" },
+    { name = "isaacsim-robot-setup" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -689,6 +724,11 @@ requires-dist = [
     { name = "gitpython", specifier = "==3.1.46" },
     { name = "gymnasium", specifier = "==1.2.2" },
     { name = "ipython", marker = "extra == 'dev'" },
+    { name = "isaacsim", marker = "extra == 'isaac'", specifier = "==4.5.0.0" },
+    { name = "isaacsim-extscache-kit", marker = "extra == 'isaac'", specifier = "==4.5.0.0" },
+    { name = "isaacsim-extscache-kit-sdk", marker = "extra == 'isaac'", specifier = "==4.5.0.0" },
+    { name = "isaacsim-extscache-physics", marker = "extra == 'isaac'", specifier = "==4.5.0.0" },
+    { name = "isaacsim-robot-setup", marker = "extra == 'isaac'", specifier = "==4.5.0.0" },
     { name = "lmdb", specifier = "==1.7.5" },
     { name = "matplotlib", specifier = "==3.10.1" },
     { name = "msgpack", specifier = "==1.1.0" },
@@ -716,7 +756,7 @@ requires-dist = [
     { name = "tyro", specifier = "==0.9.17" },
     { name = "wandb", specifier = "==0.23.0" },
 ]
-provides-extras = ["dev", "gpu"]
+provides-extras = ["isaac", "dev", "gpu"]
 
 [[package]]
 name = "gymnasium"
@@ -851,6 +891,87 @@ wheels = [
 ]
 
 [[package]]
+name = "isaacsim"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "isaacsim-kernel" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ae/98/05e01c94aa587b4bbc941458e83682b3dff8755aff38d7ee897e88324983/isaacsim-4.5.0.0.tar.gz", hash = "sha256:37cdfc05b7bfa38394a8f467be26305d7da1df7d3f8991396e242757a576a76a", size = 1061, upload-time = "2025-01-29T23:36:26.216Z" }
+
+[[package]]
+name = "isaacsim-core"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "boto3" },
+    { name = "isaacsim-kernel" },
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "opencv-python" },
+    { name = "psutil" },
+    { name = "pyyaml" },
+    { name = "scipy" },
+    { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine != 'aarch64' or sys_platform != 'linux'" },
+    { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c7/d9/ad877196e2be15d50c137ae107d0c2481933a224333fafc4034fbb8980f8/isaacsim_core-4.5.0.0.tar.gz", hash = "sha256:a2dea1071848585b764d60e0d958777977bee375c761d4ed61282c01b0d7ccdf", size = 919, upload-time = "2025-01-29T23:34:14.433Z" }
+
+[[package]]
+name = "isaacsim-extscache-kit"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/41/36faf63ac88ae07ca7bc66a32a25126f34f9d4f1b532e73485c47f55fd00/isaacsim_extscache_kit-4.5.0.0.tar.gz", hash = "sha256:2c04b8646e5cd570cdf3cd05cf8a3869cd39f7e4428b9b03074747f6e722dbe0", size = 863, upload-time = "2025-01-29T23:49:03.416Z" }
+
+[[package]]
+name = "isaacsim-extscache-kit-sdk"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/89/2d843457cd07f45f748249b18edc1952617d3c56eaf01fe9767d176b1008/isaacsim_extscache_kit_sdk-4.5.0.0.tar.gz", hash = "sha256:9b8388de7261672e992793db3a63e480302ab258a6acc6d5601b1caaaf842c26", size = 875, upload-time = "2025-01-29T23:41:25.343Z" }
+
+[[package]]
+name = "isaacsim-extscache-physics"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/32/5b793f9ad28543646bbc63ede97bbcd19ef98eb16fa184dd91a62ab5529f/isaacsim_extscache_physics-4.5.0.0.tar.gz", hash = "sha256:6e0869f1c76b51e74f5c722fcd370be23b18a6afe264ee335e3d46cce19afa02", size = 869, upload-time = "2025-01-29T23:34:50.633Z" }
+
+[[package]]
+name = "isaacsim-gui"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "isaacsim-core" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/72/e4/d77f456cec7681bcdfee3d61a6e37a62736294ce97c59819a60a07925f80/isaacsim_gui-4.5.0.0.tar.gz", hash = "sha256:aaafc2b4835dabe04df8b96af9e8f493f57fe16e3205e2f7d64170c014a206da", size = 870, upload-time = "2025-01-29T23:37:24.921Z" }
+
+[[package]]
+name = "isaacsim-kernel"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "omniverse-kit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d7/cb/9a2633b69ac26848d63487a19a1d2c1681e3069047894f53fed7033807eb/isaacsim_kernel-4.5.0.0.tar.gz", hash = "sha256:e0c4c251373076d6112ed703c632b6f70c7a55d3256d6c49f9495bbe1a0ba1dc", size = 854, upload-time = "2025-01-29T23:47:33.613Z" }
+
+[[package]]
+name = "isaacsim-robot-motion"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "isaacsim-gui" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d2/a1/ddcb0f67123dfc552301730a54ea4229720ef3d9c99ffc36aa823375c1fb/isaacsim_robot_motion-4.5.0.0.tar.gz", hash = "sha256:2fc827f8a7e931f71542bef64abb18f29c92df1e47247d1d3424558dbb200d07", size = 890, upload-time = "2025-01-29T23:43:25.32Z" }
+
+[[package]]
+name = "isaacsim-robot-setup"
+version = "4.5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "isaacsim-robot-motion" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8a/fd/84c5ed0abd2503bc962f02647955c70c18469c6d6b33a015053bf30a47fe/isaacsim_robot_setup-4.5.0.0.tar.gz", hash = "sha256:40d50318dcb373f388a9648f8a80b08f722fdd9ae24bc2768d4b1e0e619cb7e2", size = 871, upload-time = "2025-01-29T23:36:22.671Z" }
+
+[[package]]
 name = "jedi"
 version = "0.19.2"
 source = { registry = "https://pypi.org/simple" }
@@ -872,6 +993,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz", hash = "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d", size = 245115, upload-time = "2025-03-05T20:05:02.478Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67", size = 134899, upload-time = "2025-03-05T20:05:00.369Z" },
+]
+
+[[package]]
+name = "jmespath"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/59/322338183ecda247fb5d1763a6cbe46eff7222eaeebafd9fa65d4bf5cb11/jmespath-1.1.0.tar.gz", hash = "sha256:472c87d80f36026ae83c6ddd0f1d05d4e510134ed462851fd5f754c8c3cbb88d", size = 27377, upload-time = "2026-01-22T16:35:26.279Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/14/2f/967ba146e6d58cf6a652da73885f52fc68001525b4197effc174321d70b4/jmespath-1.1.0-py3-none-any.whl", hash = "sha256:a5663118de4908c91729bea0acadca56526eb2698e83de10cd116ae0f4e97c64", size = 20419, upload-time = "2026-01-22T16:35:24.919Z" },
 ]
 
 [[package]]
@@ -1316,6 +1446,12 @@ wheels = [
 ]
 
 [[package]]
+name = "omniverse-kit"
+version = "106.5.0.162521"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f8/1c/c957131be37bf260c666a2e22b16d6cf3ff6deaf3389281672b880833953/omniverse_kit-106.5.0.162521.tar.gz", hash = "sha256:2dd0e6d0f752b6d9dea2148e511626521623e13aeb8b7cfe3f44d67cc52d7ee0", size = 1989, upload-time = "2024-12-18T22:13:27.883Z" }
+
+[[package]]
 name = "onnx"
 version = "1.20.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1338,6 +1474,23 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/74/a7/edce1403e05a46e59b502fae8e3350ceeac5841f8e8f1561e98562ed9b09/onnx-1.20.1-cp312-abi3-win32.whl", hash = "sha256:564c35a94811979808ab5800d9eb4f3f32c12daedba7e33ed0845f7c61ef2431", size = 16238216, upload-time = "2026-01-10T01:39:39.46Z" },
     { url = "https://files.pythonhosted.org/packages/8b/c7/8690c81200ae652ac550c1df52f89d7795e6cc941f3cb38c9ef821419e80/onnx-1.20.1-cp312-abi3-win_amd64.whl", hash = "sha256:9fe7f9a633979d50984b94bda8ceb7807403f59a341d09d19342dc544d0ca1d5", size = 16389207, upload-time = "2026-01-10T01:39:41.955Z" },
     { url = "https://files.pythonhosted.org/packages/01/a0/4fb0e6d36eaf079af366b2c1f68bafe92df6db963e2295da84388af64abc/onnx-1.20.1-cp312-abi3-win_arm64.whl", hash = "sha256:21d747348b1c8207406fa2f3e12b82f53e0d5bb3958bcd0288bd27d3cb6ebb00", size = 16344155, upload-time = "2026-01-10T01:39:45.536Z" },
+]
+
+[[package]]
+name = "opencv-python"
+version = "4.11.0.86"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/17/06/68c27a523103dad5837dc5b87e71285280c4f098c60e4fe8a8db6486ab09/opencv-python-4.11.0.86.tar.gz", hash = "sha256:03d60ccae62304860d232272e4a4fda93c39d595780cb40b161b310244b736a4", size = 95171956, upload-time = "2025-01-16T13:52:24.737Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/05/4d/53b30a2a3ac1f75f65a59eb29cf2ee7207ce64867db47036ad61743d5a23/opencv_python-4.11.0.86-cp37-abi3-macosx_13_0_arm64.whl", hash = "sha256:432f67c223f1dc2824f5e73cdfcd9db0efc8710647d4e813012195dc9122a52a", size = 37326322, upload-time = "2025-01-16T13:52:25.887Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/84/0a67490741867eacdfa37bc18df96e08a9d579583b419010d7f3da8ff503/opencv_python-4.11.0.86-cp37-abi3-macosx_13_0_x86_64.whl", hash = "sha256:9d05ef13d23fe97f575153558653e2d6e87103995d54e6a35db3f282fe1f9c66", size = 56723197, upload-time = "2025-01-16T13:55:21.222Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/bd/29c126788da65c1fb2b5fb621b7fed0ed5f9122aa22a0868c5e2c15c6d23/opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1b92ae2c8852208817e6776ba1ea0d6b1e0a1b5431e971a2a0ddd2a8cc398202", size = 42230439, upload-time = "2025-01-16T13:51:35.822Z" },
+    { url = "https://files.pythonhosted.org/packages/2c/8b/90eb44a40476fa0e71e05a0283947cfd74a5d36121a11d926ad6f3193cc4/opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6b02611523803495003bd87362db3e1d2a0454a6a63025dc6658a9830570aa0d", size = 62986597, upload-time = "2025-01-16T13:52:08.836Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/d7/1d5941a9dde095468b288d989ff6539dd69cd429dbf1b9e839013d21b6f0/opencv_python-4.11.0.86-cp37-abi3-win32.whl", hash = "sha256:810549cb2a4aedaa84ad9a1c92fbfdfc14090e2749cedf2c1589ad8359aa169b", size = 29384337, upload-time = "2025-01-16T13:52:13.549Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/7d/f1c30a92854540bf789e9cd5dde7ef49bbe63f855b85a2e6b3db8135c591/opencv_python-4.11.0.86-cp37-abi3-win_amd64.whl", hash = "sha256:085ad9b77c18853ea66283e98affefe2de8cc4c1f43eda4c100cf9b2721142ec", size = 39488044, upload-time = "2025-01-16T13:52:21.928Z" },
 ]
 
 [[package]]
@@ -1855,6 +2008,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f6/58/ac864a75067dcbd3b95be5ab4eb2b601d7fbc3d3d736a27e391a4f92a5c1/ruff-0.15.1-py3-none-win32.whl", hash = "sha256:660975d9cb49b5d5278b12b03bb9951d554543a90b74ed5d366b20e2c57c2098", size = 10462555, upload-time = "2026-02-12T23:09:29.899Z" },
     { url = "https://files.pythonhosted.org/packages/e0/5e/d4ccc8a27ecdb78116feac4935dfc39d1304536f4296168f91ed3ec00cd2/ruff-0.15.1-py3-none-win_amd64.whl", hash = "sha256:c820fef9dd5d4172a6570e5721704a96c6679b80cf7be41659ed439653f62336", size = 11599956, upload-time = "2026-02-12T23:09:01.157Z" },
     { url = "https://files.pythonhosted.org/packages/2a/07/5bda6a85b220c64c65686bc85bd0bbb23b29c62b3a9f9433fa55f17cda93/ruff-0.15.1-py3-none-win_arm64.whl", hash = "sha256:5ff7d5f0f88567850f45081fac8f4ec212be8d0b963e385c3f7d0d2eb4899416", size = 10874604, upload-time = "2026-02-12T23:09:05.515Z" },
+]
+
+[[package]]
+name = "s3transfer"
+version = "0.17.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "botocore" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9b/ec/7c692cde9125b77e84b307354d4fb705f98b8ccad59a036d5957ca75bfc3/s3transfer-0.17.0.tar.gz", hash = "sha256:9edeb6d1c3c2f89d6050348548834ad8289610d886e5bf7b7207728bd43ce33a", size = 155337, upload-time = "2026-04-29T22:07:36.33Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/72/c6c32d2b657fa3dad1de340254e14390b1e334ce38268b7ad51abda3c8c2/s3transfer-0.17.0-py3-none-any.whl", hash = "sha256:ce3801712acf4ad3e89fb9990df97b4972e93f4b3b0004d214be5bce12814c20", size = 86811, upload-time = "2026-04-29T22:07:34.966Z" },
 ]
 
 [[package]]
